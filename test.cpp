@@ -5,6 +5,5 @@
 int main (void){
 
   tmManager* tm = new tmManager();
-  printf("foo2\n");
 
 }

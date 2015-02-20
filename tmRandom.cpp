@@ -1,6 +1,15 @@
 #include "tmRandom.h"
 
-int randomWith( int max_num ){
-    srand((unsigned)time(NULL));
+//Constructor
+tmRandom::tmRandom(){
+
+  srand((unsigned)time(NULL));
+
+
+};
+
+
+//Generate random number with Max
+int tmRandom::randomWith( int max_num ){
     return ( (int)rand()%max_num+1 );
 }

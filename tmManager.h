@@ -13,6 +13,7 @@ class tmManager {
     //An Array for grid
     grid_t grids[COLUMN*ROW];
     point_t points[POINT_NUM];
+    tmRandom random;
 
     //Methods
     int initGrids(grid_t *grids);

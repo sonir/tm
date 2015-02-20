@@ -3,6 +3,7 @@
 tmManager::tmManager(){
 
   initGrids(grids);
+  initPoints(points);
 
 }; //Constructor
 
@@ -27,9 +28,10 @@ int tmManager::initPoints(point_t *points){
 
     for(int i=0; i<POINT_NUM; i++){
 
-      points[i].position.x = 0.;
-      points[i].position.y = 0.;
+      points[i].position.x = (int)random.randomWith(COLUMN)-1;
+      points[i].position.y = (int)random.randomWith(ROW)-1;
 
+      std::cout<< i <<":position" << points[i].position.x << "," << points[i].position.y << std::endl;
 
     }
 

@@ -2,4 +2,11 @@
 
 #include <stdlib.h>
 #include <time.h>
-int randomWith( int max_num );
+
+class tmRandom {
+
+  public:
+    tmRandom();
+    int randomWith( int max_num );
+
+};
