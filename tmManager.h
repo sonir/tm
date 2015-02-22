@@ -3,20 +3,24 @@
 #include "tmParams.h"
 #include "tmTypes.h"
 #include "tmRandom.h"
+#include "tmTool.h"
+class tmTool;
 
 class tmManager {
 
   public:
     tmManager();
+    grid_t grids[COLUMN*ROW];
+    tmRandom random;
+
 
   private:
     //An Array for grid
-    grid_t grids[COLUMN*ROW];
     point_t points[POINT_NUM];
-    tmRandom random;
+    tmTool *tool;
 
     //Methods
     int initGrids(grid_t *grids);
     int initPoints(point_t *points);
-
+    void sync(point_t *pPoint);
 };

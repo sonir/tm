@@ -3,8 +3,10 @@
 #ifndef STTM
 #define STTM
 
-//Structure for position
 
+typedef enum {UP,DOWN,LEFT,RIGHT, ULEFT, URIGHT, DLEFT, DRIGHT} EDirection;
+
+//Structure for position
 typedef struct position {
 
   float x;
@@ -29,6 +31,8 @@ typedef struct grid {
 //Structure of point
 typedef struct point {
 
+  int point_id;
+  int now_node;
   position_t position;
 
 } point_t;

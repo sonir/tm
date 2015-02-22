@@ -2,6 +2,7 @@
 
 tmManager::tmManager(){
 
+  tool = new tmTool(this, COLUMN, ROW, NODE_NUM, POINT_NUM);
   initGrids(grids);
   initPoints(points);
 
@@ -28,13 +29,19 @@ int tmManager::initPoints(point_t *points){
 
     for(int i=0; i<POINT_NUM; i++){
 
-      points[i].position.x = (int)random.randomWith(COLUMN)-1;
-      points[i].position.y = (int)random.randomWith(ROW)-1;
+      points[i].point_id = i;
+      points[i].now_node = (int)random.randomWith(NODE_NUM);
+      points[i].position = tool->nodeToPosition(points[i].now_node);
 
-      std::cout<< i <<":position" << points[i].position.x << "," << points[i].position.y << std::endl;
+      // std::cout << "id:"<< points[i].point_id <<":position:" << "node=" << points[i].now_node << "," << points[i].position.x << "," << points[i].position.y << std::endl;
 
     }
 
     return 0;
+
+}
+
+void tmManager::sync(point_t *pPoint){
+
 
 }
