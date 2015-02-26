@@ -48,59 +48,76 @@ void tmTool::move(point_t *point, int distance){
   if(isRandomMode(distance)) mode = RANDOM_WITH_MAX_NUM;
   else mode = SPECIFIED;
 
-  //Strip nagative sign
+  //Strip negative sign
   distance = abs(distance);
+  std::cout << "dist:" << distance << std::endl;
 
   //Set actual number to move
   if(mode == RANDOM_WITH_MAX_NUM) step=random.randomWith(distance);
   else if(mode == SPECIFIED) step = distance;
+  std::cout << "step:" << step << std::endl;
+
+
 
   for(int i=0; i<step; i++){
 
       int destination;
-      switch(directionIs(point)){
+      do{
+        switch(directionIs(point)){
 
-          case UP:
-          destination = (point->now_node) - COLUMN;
-          break;
+            case UP:
+            destination = (point->now_node) - COLUMN;
+            break;
 
-          case DOWN:
-          destination = (point->now_node) + COLUMN;
-          break;
+            case DOWN:
+            destination = (point->now_node) + COLUMN;
+            break;
 
-          case LEFT:
-          destination = (point->now_node) - 1;
-          break;
+            case LEFT:
+            destination = (point->now_node) - 1;
+            break;
 
-          case RIGHT:
-          destination = (point->now_node) + 1;
-          break;
+            case RIGHT:
+            destination = (point->now_node) + 1;
+            break;
 
-          case ULEFT:
-          destination = ( (point->now_node) - COLUMN ) - 1;
-          break;
+            case ULEFT:
+            destination = ( (point->now_node) - COLUMN ) - 1;
+            break;
 
-          case URIGHT:
-          destination = ( (point->now_node) - COLUMN ) + 1;
-          break;
+            case URIGHT:
+            destination = ( (point->now_node) - COLUMN ) + 1;
+            break;
 
-          case DLEFT:
-          destination = ( (point->now_node) + COLUMN ) - 1;
-          break;
+            case DLEFT:
+            destination = ( (point->now_node) + COLUMN ) - 1;
+            break;
 
-          case DRIGHT:
-          destination = ( (point->now_node) + COLUMN ) + 1;
-          break;
+            case DRIGHT:
+            destination = ( (point->now_node) + COLUMN ) + 1;
+            break;
 
-          default:
-          break;
+            default:
+            break;
 
-      }
+        }
 
+      // }while(point->pre_node==destination);
+      }while(isDestinationReturnPath(point,destination));
+
+      //Set prev position to avoid return
+      point->pre_node = point->now_node;
       //Set the new position
       point->now_node = destination;
-
+      printf("%d\n" , point->now_node);
   }
+
+}
+
+bool tmTool::isDestinationReturnPath(point_t *point, int destination){
+
+  if(point->pre_node==destination)return true;
+  return false;
 
 }
 
@@ -114,55 +131,15 @@ bool tmTool::isRandomMode(int distance){
 EDirection tmTool::directionIs(point_t *point){
 
   grid_t *grids = manager->grids; //Get pointer of the array
-  grid_t *now_grid = &grids[point->now_node]; //get the actual pointer of now grid
+  grid_t *now_grid = &grids[(point->now_node-1)]; //get the actual pointer of now grid
   int destination;
   bool isDestinationNotCorrect = true;
   EDirection direction;
 
   do {
 
-    direction = (EDirection)random.randomWith(8);
-
-    // switch (direction){
-    //
-    //   case UP:
-    //   destination = (now_grid->grid_id) - COLUMN;
-    //   break;
-    //
-    //   case DOWN:
-    //   destination = (now_grid->grid_id) + COLUMN;
-    //   break;
-    //
-    //   case LEFT:
-    //   destination = (now_grid->grid_id) - 1;
-    //   break;
-    //
-    //   case RIGHT:
-    //   destination = (now_grid->grid_id) + 1;
-    //   break;
-    //
-    //   case ULEFT:
-    //   destination = ( (now_grid->grid_id) - COLUMN ) - 1;
-    //   break;
-    //
-    //   case URIGHT:
-    //   destination = ( (now_grid->grid_id) - COLUMN ) + 1;
-    //   break;
-    //
-    //   case DLEFT:
-    //   destination = ( (now_grid->grid_id) + COLUMN ) - 1;
-    //   break;
-    //
-    //   case DRIGHT:
-    //   destination = ( (now_grid->grid_id) + COLUMN ) + 1;
-    //   break;
-    //
-    //   default:
-    //   break;
-    // }
-
+    direction = (EDirection)(random.randomWith(8)-1);
     if(isGridActive(now_grid->grid_id, direction))isDestinationNotCorrect = false;
-
 
   } while(isDestinationNotCorrect);
 
@@ -175,7 +152,7 @@ EDirection tmTool::directionIs(point_t *point){
 bool tmTool::isGridActive(int grid_id, EDirection direction){
 
   //Out of Range
-  // if(next_grid < 1 || next_grid>NODE_NUM) return false;
+  if(grid_id < 1 || grid_id>NODE_NUM) return false;
 
   //RIGHT BORDER
   if(isGridRightEnd(grid_id)){

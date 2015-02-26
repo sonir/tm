@@ -16,7 +16,9 @@ class tmTool {
     tmTool(tmManager *pM, int tmp_row, int tmp_column, int tmp_node_num, int tmp_point_num);
     position_t nodeToPosition(int node_id);
     void move(point_t *point, int distance);
+    bool isDestinationReturnPath(point_t *point, int destination);
     EDirection directionIs(point_t *point);
+    bool isGridActive(int grid_id, EDirection direction);
     tmRandom random;
 
   private:
@@ -26,6 +28,5 @@ class tmTool {
     int point_num;
     bool isNotTopColumn(int node_id);
     bool isRandomMode(int distance);
-    bool isGridActive(int grid_id, EDirection direction);
 
 };

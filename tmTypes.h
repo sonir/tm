@@ -33,6 +33,7 @@ typedef struct point {
 
   int point_id;
   int now_node;
+  int pre_node;
   position_t position;
 
 } point_t;

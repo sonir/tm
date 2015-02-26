@@ -31,6 +31,7 @@ int tmManager::initPoints(point_t *points){
 
       points[i].point_id = i;
       points[i].now_node = (int)random.randomWith(NODE_NUM);
+      points[i].pre_node = 0;
       points[i].position = tool->nodeToPosition(points[i].now_node);
 
       // std::cout << "id:"<< points[i].point_id <<":position:" << "node=" << points[i].now_node << "," << points[i].position.x << "," << points[i].position.y << std::endl;
