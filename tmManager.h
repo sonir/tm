@@ -1,4 +1,5 @@
 #pragma once
+#define STRAIGHT_MOVE
 #include <iostream>
 #include "tmParams.h"
 #include "tmTypes.h"
