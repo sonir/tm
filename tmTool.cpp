@@ -27,7 +27,6 @@ position_t tmTool::nodeToPosition(int node_id){
   else posi.x = (float)node_id;
 
   posi.y = (node_id/column);
-
   return posi;
 
 }
@@ -39,31 +38,11 @@ bool tmTool::isNotTopColumn(int node_id){
 
 }
 
-void tmTool::move(point_t *point, int distance){
+void tmTool::moveManual(point_t *point, int distance, EDirection dir){
 
-  int step;
-  enum EMode{RANDOM_WITH_MAX_NUM, SPECIFIED};
-  EMode mode;
-
-
-
-  if(isRandomMode(distance)) mode = RANDOM_WITH_MAX_NUM;
-  else mode = SPECIFIED;
-
-  //Strip negative sign
-  distance = abs(distance);
-  // std::cout << "dist:" << distance << std::endl;
-
-  //Set actual number to move
-  if(mode == RANDOM_WITH_MAX_NUM) step=random.randomWith(distance);
-  else if(mode == SPECIFIED) step = distance;
-  // std::cout << "step:" << step << std::endl;
-
-  EDirection dir;
-  dir = directionIs(point); // <- this param is utilized for STRAIGHT_MOVE mode only. (it makes direction once only for straight move)
+  int step = distance;
     //Move the point by step
   for(int i=0; i<step; i++){
-
       int destination;
 
       #ifdef STRAIGHT_MOVE
@@ -85,13 +64,29 @@ void tmTool::move(point_t *point, int distance){
         }while(isDestinationReturnPath(point,destination));
       #endif
 
-      //Set prev position to avoid return
-      point->pre_node = point->now_node;
-      //Set the new position
-      point->now_node = destination;
-      // printf("%d\n" , point->now_node);
-  }
+      point->pre_node = point->now_node; //Set prev position to avoid return
+      point->now_node = destination; //Set the new position
 
+    }//end of for
+}
+
+
+void tmTool::move(point_t *point, int distance){
+
+  int step;
+  enum EMode{RANDOM_WITH_MAX_NUM, SPECIFIED};
+  EMode mode;
+
+  if(isRandomMode(distance)) mode = RANDOM_WITH_MAX_NUM;
+  else mode = SPECIFIED;
+
+  distance = abs(distance); //Strip negative sign
+  if(mode == RANDOM_WITH_MAX_NUM) step=random.randomWith(distance);   //Set required step by distance
+  else if(mode == SPECIFIED) step = distance;
+
+  EDirection dir;
+  dir = directionIs(point); // <- this param is utilized for STRAIGHT_MOVE mode only. (it makes direction once only for straight move)
+  moveManual(point, step, dir);
 
 }
 
@@ -219,7 +214,6 @@ bool tmTool::isGridActive(int grid_id, EDirection direction){
     if( direction==DOWN || direction==DLEFT || direction==DRIGHT ) return false;
 
   }
-
 
   return true; //If survive the above check, it is active
 

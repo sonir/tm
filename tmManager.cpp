@@ -3,6 +3,7 @@
 tmManager::tmManager(){
 
   tool = new tmTool(this, COLUMN, ROW, NODE_NUM, POINT_NUM);
+  line = new LineController(3);
   initGrids(grids);
   initPoints(points);
 
@@ -43,6 +44,42 @@ int tmManager::initPoints(point_t *points){
 }
 
 void tmManager::sync(point_t *pPoint){
+
+
+
+}
+
+void tmManager::cycle(){
+
+    for(int i=0; i<POINT_NUM ;i++){
+
+        tool->move(&points[i], 1);
+
+    }
+
+}
+
+void tmManager::move(int point_id){
+
+  switch(point_id){
+
+    case 0:
+    tool->moveManual(&points[0], 1, UP);
+    break;
+
+    case 1:
+    tool->moveManual(&points[1], 1, URIGHT);
+    break;
+
+    case 2:
+    tool->moveManual(&points[2], 1, DLEFT);
+    break;
+
+    case 3:
+    tool->moveManual(&points[3], 1, RIGHT);
+    break;
+
+  }
 
 
 }

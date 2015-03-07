@@ -1,6 +1,6 @@
 CC=g++
 CFLAG=-g
-OBJGROUP=test.o tmManager.o tmRandom.o tmTool.o
+OBJGROUP=test.o tmManager.o tmRandom.o tmTool.o lineController.o
 
 all: test
 

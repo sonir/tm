@@ -2,6 +2,7 @@
 #include <cassert>
 #include "tmManager.h"
 #include "gtest/gtest.h"
+#include "lineController.h"
 
 
 //Function prototypes
@@ -12,7 +13,7 @@ void testTool(void);
 tmManager* tm = new tmManager();
 tmTool *tool = new tmTool(tm, COLUMN, ROW, NODE_NUM,POINT_NUM);
 
-
+using namespace std;
 
 void testTool(void){
 
@@ -123,19 +124,124 @@ void testTool(void){
   tool->move(&point,-3);
   std::cout << "TRY4b new position is: " << point.now_node << std::endl;
   assert( point.now_node!=5 || point.now_node==2 || point.now_node==26 || point.now_node==50 || point.now_node==53 || point.now_node==56 || point.now_node==32 || point.now_node==8 );
-  point.now_node=29;point.pre_node=21;
-  tool->move(&point,-4);
+  point.now_node=12;point.pre_node=20;
+  tool->moveManual(&point, 3, UP);
   std::cout << "TRY4c new position is: " << point.now_node << std::endl;
+  assert( (point.now_node==2 || point.now_node<=6) || (point.now_node==18||point.now_node==22) );
+
+
+  // point.now_node=29;point.pre_node=21;
+  // tool->move(&point,-4);
+  // std::cout << "TRY4c new position is: " << point.now_node << std::endl;
+
   printf("<test> tmTool:move is working correctlly. <cleared>\n");
   #endif
 
 }
 
 
+void testLine(void){
+
+  cout << "-- testLine() --" << endl;
+
+  cout << "numCHK" << endl;
+  int foo = (3-1)^2;
+  cout << foo << endl;
+
+  LineController *line = new LineController(3); //grid 3^2
+  LineController *line2 = new LineController(5); //grid 5^2
+  //Chk calculation the numbers of lines
+  assert( line->vline_num==6 );
+  assert( line->hline_num==6 );
+  assert( line->pDLines_num==4 );
+  assert( line->nDLines_num==4 );
+
+  // cout << "line2" << endl;
+  // LineController *line2 = new LineController(5); //grid 3^2
+  // assert( line2->getLineID(8,UP)==3 );
+
+
+  //Test Get lineID
+  // cout << "5:" << line->getLineID(5,DRIGHT) << endl;
+  assert( line->getLineID(5,UP)==1 );
+  assert( line->getLineID(5,DOWN)==4 );
+  assert( line->getLineID(5,LEFT)==2 );
+  assert( line->getLineID(5,RIGHT)==3 );
+  assert( line->getLineID(5,ULEFT)==0 );
+  assert( line->getLineID(5,URIGHT)==1 );
+  assert( line->getLineID(5,DLEFT)==2 );
+  assert( line->getLineID(5,DRIGHT)==3 );
+  assert( line->getLineID(6,UP)==2 );
+  assert( line->getLineID(6,DOWN)==5 );
+  assert( line->getLineID(6,LEFT)==3);
+  assert( line->getLineID(6,ULEFT)==1 );
+  assert( line->getLineID(6,DLEFT)==3 );
+
+  assert( line2->getLineID(9,UP)==3 );
+  assert( line2->getLineID(9,DOWN)==8 );
+  assert( line2->getLineID(9,LEFT)==6 );
+  assert( line2->getLineID(9,RIGHT)==7 );
+  assert( line2->getLineID(9,ULEFT)==2 );
+  assert( line2->getLineID(9,URIGHT)==3 );
+  assert( line2->getLineID(9,DLEFT)==6 );
+  assert( line2->getLineID(9,DRIGHT)==7 );
+  cout << "<test:lineController> [ getLineID() ] is working correctlly. <cleared>" << endl;
+
+  cout << "print pDlines array" << line->pDLines_num << endl;
+  for(int i=0; i<line->pDLines_num ; i++){
+
+    cout << i << ": uid= " << line->pDLines[i].uid << "active=" << line->pDLines[i].active << "property:" << line->pDLines[i].property << endl;
+
+  }
+
+
+  //Test Get Line
+  line_t l = line->getLine(8,UP); assert( l.uid==4 && l.property==VERTICAL ); //Test Get Line
+  l = line->getLine(1,DOWN); assert( l.uid==0 && l.property==VERTICAL ); //Test Get Line
+  l = line->getLine(9,LEFT); assert( l.uid==5 && l.property==HORIZONTAL ); //Test Get Line
+  l = line->getLine(7,RIGHT); assert( l.uid==4 && l.property==HORIZONTAL ); //Test Get Line
+  l = line->getLine(4,URIGHT); assert( l.uid==0 && l.property==POSI_DIAGONAL ); //Test Get Line
+  l = line->getLine(6,ULEFT); assert( l.uid==1 && l.property==NEGA_DIAGONAL ); //Test Get Line
+  l = line->getLine(2,DLEFT); assert( l.uid==0 && l.property==POSI_DIAGONAL ); //Test Get Line
+  l = line->getLine(5,DRIGHT); cout<<l.property<<endl;  assert( l.uid==3 && l.property==NEGA_DIAGONAL ); //Test Get Line
+
+
+
+  cout << "<test:lineController> [ getLine() ] is working correctlly. <cleared>" << endl;
+
+  // Test SetLine
+  l = line->getLine(8, URIGHT);
+  assert( l.active==false );
+  line->setLine(8, URIGHT); //SetLine with gid, direction
+  l = line->getLine(8, URIGHT);
+  // cout << l.uid << "," << l.property << endl;
+  assert( l.uid==3 && l.active==true && l.property==POSI_DIAGONAL );
+  cout << "<test:lineController> [ setLine() ] is working correctlly. <cleared>" << endl;
+  //
+
+  //Test Line ID
+
+}
+
+
+void testSync(){
+
+  // tm->move(0);
+  // assert(tm->line->vLines[1].active==true);
+  // tm->move(1);
+  // assert(tm->line->pDLines[1].active==true);
+  // tm->move(2);
+  // assert(tm->line->nDLines[2].active==true);
+  // tm->move(3);
+  // assert(tm->line->hLines[5].active==true);
+
+}
 
 bool test (void) {
 
   testTool();
+  testLine();
+  testSync();
   return true;
 
 }
