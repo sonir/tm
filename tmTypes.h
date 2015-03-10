@@ -25,6 +25,13 @@ typedef struct grid {
   bool isDownConnected;
   bool isLeftConnected;
   bool isRightConnected;
+  bool isULeftConnected;
+  bool isURightConnected;
+  bool isDLeftConnected;
+  bool isDRightConnected;
+
+
+
 } grid_t;
 
 

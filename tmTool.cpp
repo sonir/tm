@@ -1,10 +1,5 @@
 #include "tmTool.h"
 
-//Function ProtoTypes
-bool isGridRightEnd(int grid);
-bool isGridLeftEnd(int grid);
-bool isGridTop(int grid);
-bool isGridBottom(int grid);
 
 // tmTool::tmTool(tmManager *manager, int tmp_row, int tmp_column, int tmp_node_num, int tmp_point_num){
 tmTool::tmTool(tmManager *pM, int tmp_row, int tmp_column, int tmp_node_num, int tmp_point_num){
@@ -103,11 +98,11 @@ int tmTool::doStep(EDirection dir, point_t *point) {
     switch(dir){
 
         case UP:
-        destination = (point->now_node) - COLUMN;
+        destination = (point->now_node) - column;
         break;
 
         case DOWN:
-        destination = (point->now_node) + COLUMN;
+        destination = (point->now_node) + column;
         break;
 
         case LEFT:
@@ -119,19 +114,19 @@ int tmTool::doStep(EDirection dir, point_t *point) {
         break;
 
         case ULEFT:
-        destination = ( (point->now_node) - COLUMN ) - 1;
+        destination = ( (point->now_node) - column ) - 1;
         break;
 
         case URIGHT:
-        destination = ( (point->now_node) - COLUMN ) + 1;
+        destination = ( (point->now_node) - column ) + 1;
         break;
 
         case DLEFT:
-        destination = ( (point->now_node) + COLUMN ) - 1;
+        destination = ( (point->now_node) + column ) - 1;
         break;
 
         case DRIGHT:
-        destination = ( (point->now_node) + COLUMN ) + 1;
+        destination = ( (point->now_node) + column ) + 1;
         break;
 
         default:
@@ -159,7 +154,7 @@ bool tmTool::isRandomMode(int distance){
 
 EDirection tmTool::directionIs(point_t *point){
 
-  grid_t *grids = manager->grids; //Get pointer of the array
+  grid_t *grids = manager->grids.data(); //Get pointer of the array
   grid_t *now_grid = &grids[(point->now_node-1)]; //get the actual pointer of now grid
   int destination;
   bool isDestinationNotCorrect = true;
@@ -182,7 +177,7 @@ EDirection tmTool::directionIs(point_t *point){
 bool tmTool::isGridActive(int grid_id, EDirection direction){
 
   //Out of Range
-  if(grid_id < 1 || grid_id>NODE_NUM) {
+  if(grid_id < 1 || grid_id > manager->node_num) {
     std::cout << "ERR: tmTool.isGridActive();  The specified position is not exist." << std::endl;
     exit (EXIT_FAILURE);
   }
@@ -219,32 +214,68 @@ bool tmTool::isGridActive(int grid_id, EDirection direction){
 
 }
 
+EDirection tmTool::getDirection(point_t point){
+
+  EDirection dir;
+
+  position_t st = nodeToPosition(point.pre_node);
+  position_t ed = nodeToPosition(point.now_node);
+
+  int x_mov = ed.x-st.x;
+  int y_mov = ed.y-st.y;
+  
+  if(x_mov>0){
+
+    if(y_mov==0)dir = RIGHT;
+    else if(y_mov>0)dir = DRIGHT;
+    else dir = URIGHT;
+
+  }else if(x_mov<0){
+
+    if(y_mov==0) dir = LEFT;
+    else if(y_mov>0) dir = DLEFT;
+    else dir = ULEFT;
+
+  }else if (x_mov==0){
+
+    if(y_mov<0)dir = UP;
+    else if(y_mov>=0)dir = DOWN;
+
+  }else {
+
+    exit(EXIT_FAILURE);
+
+  }
+
+  return dir;
+
+}
 
 
-bool isGridRightEnd(int grid){
+bool tmTool::isGridRightEnd(int grid){
 
-  if(grid%COLUMN==0)return true;
+  if(grid%column==0)return true;
   else return false;
 
 }
 
-bool isGridLeftEnd(int grid){
+bool tmTool::isGridLeftEnd(int grid){
 
-  if(grid%COLUMN==1||grid==1)return true;
+  if(grid%column==1||grid==1)return true;
   else return false;
 
 }
 
-bool isGridTop(int grid){
+bool tmTool::isGridTop(int grid){
 
-  if(grid<=COLUMN) return true;
+  if(grid<=column) return true;
   else return false;
 
 }
 
-bool isGridBottom(int grid){
+bool tmTool::isGridBottom(int grid){
 
-  if(grid > COLUMN*(ROW-1)) return true;
+  if(grid > column*(row-1)) return true;
   else return false;
 
 }

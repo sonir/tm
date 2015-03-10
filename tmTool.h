@@ -23,6 +23,7 @@ class tmTool {
     bool isDestinationReturnPath(point_t *point, int destination);
     EDirection directionIs(point_t *point);
     bool isGridActive(int grid_id, EDirection direction);
+    EDirection getDirection(point_t point);
 
   private:
     int row;
@@ -32,5 +33,11 @@ class tmTool {
 
     bool isNotTopColumn(int node_id);
     bool isRandomMode(int distance);
+    //Function ProtoTypes
+    bool isGridRightEnd(int grid);
+    bool isGridLeftEnd(int grid);
+    bool isGridTop(int grid);
+    bool isGridBottom(int grid);
+    
 
 };

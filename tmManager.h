@@ -1,6 +1,7 @@
 #pragma once
 // #define STRAIGHT_MOVE
 #include <iostream>
+#include <vector>
 #include "tmParams.h"
 #include "tmTypes.h"
 #include "tmRandom.h"
@@ -12,21 +13,30 @@ class tmTool;
 class tmManager {
 
   public:
-    grid_t grids[COLUMN*ROW];
-    point_t points[POINT_NUM];
+    //grid_t grids[COLUMN*ROW];
+    std::vector<grid_t> grids;
+    //point_t points[POINT_NUM];
+    std::vector<point_t> points;
     LineController *line;
     tmRandom random;
+    int grid_column;
+    int grid_row;
+    int node_num;
+    int point_num;
 
-    tmManager();
+
+    tmManager(int column, int row, int number_of_point);
     void cycle();
-    void move(int point_id);
+    void move(int point_id, EDirection dir);
+    void connectGrids(point_t *pPoint);    
 
 
   private:
     tmTool *tool;
     //Methods
-    int initGrids(grid_t *grids);
-    int initPoints(point_t *points);
+    int initGrids();
+    int initPoints();
+    void initForTest( void );
     void sync(point_t *pPoint);
 
 };
