@@ -8,6 +8,7 @@
 //Function prototypes
 bool test(void);
 void testTool(void);
+void testTmManager(void);
 
 //Global Variables
 tmManager* tm = new tmManager(COLUMN, ROW, POINT_NUM);
@@ -22,7 +23,6 @@ void testTool(void){
 
   //Test Conversion nodeToPosition
   position_t p;
-
   p=tool->nodeToPosition(1);
   assert(p.x==0. && p.y==0.);
 
@@ -50,7 +50,7 @@ void testTool(void){
   p=tool->nodeToPosition(24);
   assert(p.x==7. && p.y==2.);
 
-  printf("<test::tmTool> [ nodeToPosition() ] <cleared>\n");
+  printf("<test::tmTool> [ nodeToPosition() ] OK\n");
 
 
   //Test isGridActive
@@ -70,7 +70,7 @@ void testTool(void){
   assert(tool->isGridActive(64,DRIGHT)==false);
   assert(tool->isGridActive(64,URIGHT)==false);
   assert(tool->isGridActive(64,ULEFT)==true);
-  printf("<test::tmTool> [ isGridActive() ] is working correctlly. <cleared>\n");
+  printf("<test::tmTool> [ isGridActive() ] OK. \n");
 
 
   point_t point;
@@ -94,14 +94,14 @@ void testTool(void){
   // Force error code
   // point.now_node = 1; point.pre_node=0;
   // assert( tool->doStep(LEFT,&point)==0);
-  printf("<test::tmTool> [ doStep() ] is working correctlly. <cleared>\n");
+  printf("<test::tmTool> [ doStep() ] OK. \n");
 
 
   #ifndef STRAIGHT_MOVE
   // Test Avoit ReturnPath
   point.now_node = 1; point.pre_node=0;
   assert(tool->isDestinationReturnPath(&point,0)==true);
-  printf("<test::tmTool> [ isDestinationNotReturnPath ] is working correctlly. <cleared>\n");
+  printf("<test::tmTool> [ isDestinationNotReturnPath ] OK. \n");
 
   //Test Move Method
   point.now_node=1; tool->move(&point,-1);
@@ -119,7 +119,7 @@ void testTool(void){
   point.now_node=1; tool->move(&point,-5);
   // std::cout << "TRY4 new position is: " << point.now_node << std::endl;
   assert(point.now_node<5 || ( point.now_node%8<=8 && point.now_node< ((8+1)*5+1) ));
-  printf("<test::tmTool> [ move()] is working correctlly. <cleared>\n");
+  printf("<test::tmTool> [ move()] OK. \n");
   #endif
 
   #ifdef STRAIGHT_MOVE
@@ -137,8 +137,55 @@ void testTool(void){
   // tool->move(&point,-4);
   // std::cout << "TRY4c new position is: " << point.now_node << std::endl;
 
-  printf("<test> [ tmTool ] is working correctlly. <cleared>\n");
+  printf("<test> [ tmTool ] OK. \n");
   #endif
+
+
+  //Test tmTool::getDirection
+  EDirection dir;
+
+  point.pre_node = 5; point.now_node = 2;
+  dir = tool2->getDirection(point);
+  assert(dir==UP);
+
+  point.pre_node = 5; point.now_node =8;
+  dir = tool2->getDirection(point);
+  assert(dir==DOWN);
+
+  point.pre_node = 5; point.now_node = 6;
+  dir = tool2->getDirection(point);
+  assert(dir==RIGHT);
+
+  point.pre_node = 5; point.now_node = 4;
+  dir = tool2->getDirection(point);
+  assert(dir==LEFT);
+
+  point.pre_node = 5; point.now_node = 3;
+  dir = tool2->getDirection(point);
+  assert(dir==URIGHT);
+
+  point.pre_node = 5; point.now_node = 1;
+  dir = tool2->getDirection(point);
+  assert(dir==ULEFT);
+
+  point.pre_node = 5; point.now_node = 3;
+  dir = tool2->getDirection(point);
+  assert(dir==URIGHT);
+
+  point.pre_node = 5; point.now_node = 7;
+  dir = tool2->getDirection(point);
+  assert(dir==DLEFT);
+
+  point.pre_node = 5; point.now_node = 9;
+  dir = tool2->getDirection(point);
+  assert(dir==DRIGHT);
+  cout << "<test::tmTool> [ getDirection() ] OK. " << endl;
+
+
+
+  printf("--- <test::tmTool> CONDITION GREEN ---\n");
+
+
 
 }
 
@@ -178,7 +225,7 @@ void testLine(void){
   assert( line2->getLineID(9,URIGHT)==3 );
   assert( line2->getLineID(9,DLEFT)==6 );
   assert( line2->getLineID(9,DRIGHT)==7 );
-  cout << "<test:lineController> [ getLineID() ] is working correctlly. <cleared>" << endl;
+  cout << "<test:lineController> [ getLineID() ] OK. " << endl;
 
   // cout << "print pDlines array" << line->pDLines_num << endl;
   // for(int i=0; i<line->pDLines_num ; i++){
@@ -196,7 +243,7 @@ void testLine(void){
   l = line->getLine(6,ULEFT); assert( l.uid==1 && l.property==NEGA_DIAGONAL ); //Test Get Line
   l = line->getLine(2,DLEFT); assert( l.uid==0 && l.property==POSI_DIAGONAL ); //Test Get Line
   l = line->getLine(5,DRIGHT); assert( l.uid==3 && l.property==NEGA_DIAGONAL ); //Test Get Line
-  cout << "<test::lineController> [ getLine() ] is working correctlly. <cleared>" << endl;
+  cout << "<test::lineController> [ getLine() ] OK. " << endl;
 
 
   // Test SetLine
@@ -206,15 +253,18 @@ void testLine(void){
   l = line->getLine(8, URIGHT);
   // cout << l.uid << "," << l.property << endl;
   assert( l.uid==3 && l.active==true && l.property==POSI_DIAGONAL );
-  cout << "<test::lineController> [ setLine() ] is working correctlly. <cleared>" << endl;
+  cout << "<test::lineController> [ setLine() ] OK. " << endl;
   //
 
   //Test Line ID
 
+  printf("--- <test::tmLineController> CONTIDION GREEN. ---\n");
+
+
 }
 
 
-void testSync(){
+void testTmManager(){
 
   point_t point;
   EDirection dir;
@@ -259,48 +309,42 @@ void testSync(){
   tm2->connectGrids(&point);
   assert(tm2->grids[5].isDRightConnected);
   assert(tm2->grids[9].isULeftConnected);
-
-  cout << "<test::tmManager> [ connectGrids() ] is working correctlly. <cleared>" << endl;
-
+  cout << "<test::tmManager> [ connectGrids() ] OK. " << endl;
 
 
-  //Test tmTool::getDirection
-  point.pre_node = 5; point.now_node = 2;
-  dir = tool2->getDirection(point);
-  assert(dir==UP);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, UP);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==2);
+  
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, DOWN);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==8);
 
-  point.pre_node = 5; point.now_node =8;
-  dir = tool2->getDirection(point);
-  assert(dir==DOWN);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, LEFT);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==4);
 
-  point.pre_node = 5; point.now_node = 6;
-  dir = tool2->getDirection(point);
-  assert(dir==RIGHT);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, RIGHT);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==6);
 
-  point.pre_node = 5; point.now_node = 4;
-  dir = tool2->getDirection(point);
-  assert(dir==LEFT);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, ULEFT);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==1);
 
-  point.pre_node = 5; point.now_node = 3;
-  dir = tool2->getDirection(point);
-  assert(dir==URIGHT);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, URIGHT);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==3);
 
-  point.pre_node = 5; point.now_node = 1;
-  dir = tool2->getDirection(point);
-  assert(dir==ULEFT);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, DLEFT);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==7);
 
-  point.pre_node = 5; point.now_node = 3;
-  dir = tool2->getDirection(point);
-  assert(dir==URIGHT);
+  tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
+  tm2->move(0, DRIGHT);
+  assert(tm2->points[0].pre_node==5 && tm2->points[0].now_node==9);
+  cout << "<test::tmManager> [ move() ] OK. " << endl;
 
-  point.pre_node = 5; point.now_node = 7;
-  dir = tool2->getDirection(point);
-  assert(dir==DLEFT);
-
-  point.pre_node = 5; point.now_node = 9;
-  dir = tool2->getDirection(point);
-  assert(dir==DRIGHT);
-  cout << "<test::tmTool> [ getDirection() ] is working correctlly. <cleared>" << endl;
 
   tm2->points[0].pre_node=5; tm2->points[0].now_node=5;
   tm2->move(0, UP);
@@ -320,9 +364,11 @@ void testSync(){
   assert(tm2->line->hLines[5].active==true);
   assert(tm2->grids[tm2->points[3].pre_node].isRightConnected);
   assert(tm2->grids[tm2->points[3].now_node].isLeftConnected);
-
   //Check getDir
-  cout << "<test::lineController> [ testSync() ] is working correctlly. <cleared>" << endl;
+  cout << "<test::tmManager> [ sync() ] OK. " << endl;
+
+
+  cout << "--- <test::tmManager> [ tmManager ] CONDITION GREEN. ---" << endl;
 
 
 }
@@ -331,7 +377,7 @@ bool test (void) {
 
   testTool();
   testLine();
-  testSync();
+  testTmManager();
 
   cout << "<test> test.cpp::test() - ALL TEST CLEARED. Drink Beer !!" << endl;
   return true;

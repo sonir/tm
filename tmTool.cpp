@@ -46,6 +46,7 @@ void tmTool::moveManual(point_t *point, int distance, EDirection dir){
           }
 
           destination = doStep(dir,point); //Set next position
+
           while(isDestinationReturnPath(point,destination)){ //If new position was return
             dir = directionIs(point); //Change it
             destination = doStep(dir,point);

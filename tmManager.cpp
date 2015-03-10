@@ -101,6 +101,8 @@ void tmManager::connectGrids(point_t *pPoint){
   EDirection dir;
   dir = tool->getDirection(*pPoint);
 
+  // std::cout << pPoint->now_node << std::endl;
+
   switch(dir){
 
     case UP:
@@ -164,29 +166,7 @@ void tmManager::cycle(){
 
 void tmManager::move(int point_id, EDirection dir){
 
-  switch(point_id){
-
-    case 0:
-    tool->moveManual(&points[0], 1, dir);
-    sync(&points[0]);
-    break;
-
-    case 1:
-    tool->moveManual(&points[1], 1, dir);
-    sync(&points[1]);
-    break;
-
-    case 2:
-    tool->moveManual(&points[2], 1, dir);
-    sync(&points[2]);
-    break;
-
-    case 3:
-    tool->moveManual(&points[3], 1, dir);
-    sync(&points[3]);
-    break;
-
-  }
-
+    tool->moveManual(&points[point_id], 1, dir);
+    sync(&points[point_id]);
 
 }

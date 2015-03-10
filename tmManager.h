@@ -1,5 +1,4 @@
 #pragma once
-// #define STRAIGHT_MOVE
 #include <iostream>
 #include <vector>
 #include "tmParams.h"
